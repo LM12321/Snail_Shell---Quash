@@ -1,5 +1,9 @@
 > # EECS 678 - Quash Shell
 
+## Collaborators
+ Logan Whitt
+ Ara Reighard
+
 ## Introduction
 
 In this project, you will complete the Quite a Shell (quash) program using the
