@@ -1,8 +1,8 @@
 > # EECS 678 - Quash Shell
 
 ## Collaborators
- Logan Whitt
- Ara Reighard
+- Logan Whitt
+- Ara Reighard
 
 ## Introduction
 
