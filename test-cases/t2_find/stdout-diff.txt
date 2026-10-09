@@ -1,0 +1,3 @@
+0a1,2
+> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t2_find/sandbox/dir3/dir3-1/valgrind_expected.txt
+> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t2_find/sandbox/dir3/valgrind_expected.txt

@@ -28,12 +28,19 @@
 char* get_current_directory(bool* should_free) {
   // TODO: Get the current working directory. This will fix the prompt path.
   // HINT: This should be pretty simple
-  IMPLEMENT_ME();
+  //IMPLEMENT_ME();
+  char __buf__[2000];
+  static char* cwd_str; //static to save it when it leaves scope
+  cwd_str = getcwd(__buf__, sizeof(__buf__));
+  if (cwd_str == NULL){
+    perror("Size of cwd is too large");
+  }
 
   // Change this to true if necessary
   *should_free = false;
+  
 
-  return "get_current_directory()";
+  return cwd_str;
 }
 
 // Returns the value of an environment variable env_var
@@ -42,12 +49,14 @@ const char* lookup_env(const char* env_var) {
   // to interpret variables from the command line and display the prompt
   // correctly
   // HINT: This should be pretty simple
-  IMPLEMENT_ME();
+  // IMPLEMENT_ME();
+
+  
 
   // TODO: Remove warning silencers
-  (void) env_var; // Silence unused variable warning
+  // (void) env_var; // Silence unused variable warning
 
-  return "???";
+  return env_var;
 }
 
 // Check the status of background jobs
@@ -169,9 +178,10 @@ void run_kill(KillCommand cmd) {
 // Prints the current working directory to stdout
 void run_pwd() {
   // TODO: Print the current working directory
-  IMPLEMENT_ME();
-
+  fprintf(stdout, "%s", get_current_directory(false));
+  
   // Flush the buffer before returning
+  
   fflush(stdout);
 }
 
@@ -261,6 +271,8 @@ void parent_run_command(Command cmd) {
   case GENERIC:
   case ECHO:
   case PWD:
+    run_pwd();
+    break;
   case JOBS:
   case EXIT:
   case EOC:
@@ -322,6 +334,13 @@ void run_script(CommandHolder* holders) {
     end_main_loop();
     return;
   }
+  /*
+  else if (get_command_holder_type(holders[0]) == PWD &&
+          get_command_holder_type(holders[1]) == EOC)
+  {
+    run_pwd();
+  } 
+  */
 
   CommandType type;
 
