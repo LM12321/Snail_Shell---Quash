@@ -29,11 +29,11 @@ char* get_current_directory(bool* should_free) {
   // TODO: Get the current working directory. This will fix the prompt path.
   // HINT: This should be pretty simple
   //IMPLEMENT_ME();
-  char __buf__[2000];
+  char __BUF__[2000];
   static char* cwd_str; //static to save it when it leaves scope
-  cwd_str = getcwd(__buf__, sizeof(__buf__));
+  cwd_str = getcwd(__BUF__, sizeof(__BUF__));
   if (cwd_str == NULL){
-    perror("Size of cwd is too large");
+    fprintf(stderr, "Size of cwd is too large\n");
   }
 
   // Change this to true if necessary
@@ -178,10 +178,31 @@ void run_kill(KillCommand cmd) {
 // Prints the current working directory to stdout
 void run_pwd() {
   // TODO: Print the current working directory
-  fprintf(stdout, "%s", get_current_directory(false));
+
+  size_t last_dir_idx, i;
+  // char* cwd = get_current_directory()
+  bool should_free = false;
+
+  char* cwd = get_current_directory(&should_free);
+
+
+
+
+  for (i = 0; cwd[i] != '\0'; ++i) {
+    if (cwd[i] == '/' && cwd[i] != '\0') {
+      last_dir_idx = i + 1;
+    }
+  }
+  fprintf(stdout, "%s\n", cwd + last_dir_idx);
   
+  /* 
+  for (int i = 0; cwd[i] != '\0'; ++i) {
+    if (cwd[i] == '/' && cwd[i] != '\0') {
+      last_dir_idx = i + 1;
+    }
+  }
+  */
   // Flush the buffer before returning
-  
   fflush(stdout);
 }
 
@@ -315,11 +336,24 @@ void create_process(CommandHolder holder) {
   (void) r_app; // Silence unused variable warning
 
   // TODO: Setup pipes, redirects, and new process
-  IMPLEMENT_ME();
 
-  //parent_run_command(holder.cmd); // This should be done in the parent branch of
-                                  // a fork
-  //child_run_command(holder.cmd); // This should be done in the child branch of a fork
+  /* DO THIS ASAP */
+  //IMPLEMENT_ME();
+
+  pid_t pid = fork();
+  if (pid == -1){
+    fprintf(stderr, "Error in creating process\n");
+  }
+  else if (pid == 0){
+    exit(0);
+    child_run_command(holder.cmd); // This should be done in the parent branch of a fork 
+
+  }
+  else{
+    wait(NULL);
+    parent_run_command(holder.cmd); // This should be done in the child branch of a fork
+  }                  
+  
 }
 
 // Run a list of commands
