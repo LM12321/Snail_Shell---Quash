@@ -49,14 +49,18 @@ const char* lookup_env(const char* env_var) {
   // to interpret variables from the command line and display the prompt
   // correctly
   // HINT: This should be pretty simple
-  // IMPLEMENT_ME();
 
-  
+  return getenv(env_var);
+}
 
-  // TODO: Remove warning silencers
-  // (void) env_var; // Silence unused variable warning
+void write_env(const char* env_var, const char* val){
 
-  return env_var;
+  // this value when non-zero will overwrite the current env_var if already set
+  const size_t overwrite = 1; 
+  if (setenv(env_var, val, overwrite) == -1){
+    perror("ERROR: Unable to export");
+  }  
+
 }
 
 // Check the status of background jobs
@@ -122,7 +126,7 @@ void run_generic(GenericCommand cmd) {
 void run_echo(EchoCommand cmd) {
   // Print an array of strings. The args array is a NULL terminated (last
   // string is always NULL) list of strings.
-  char** str = cmd.args;
+  char** strs = cmd.args;
 
   /*   
   size_t number_of_strings = sizeof(str)/sizeof(str[0]);
@@ -141,7 +145,7 @@ void run_echo(EchoCommand cmd) {
   pid = fork();
 
   if (pid == 0){
-    if (execvp("/bin/echo", str) == -1){
+    if (execvp("/bin/echo", strs) == -1){
       perror("ERROR: Failed to execute program");
     }
   }else{
@@ -158,19 +162,15 @@ void run_echo(EchoCommand cmd) {
   fflush(stdout);
 }
 
+
 // Sets an environment variable
 void run_export(ExportCommand cmd) {
   // Write an environment variable
   const char* env_var = cmd.env_var;
   const char* val = cmd.val;
 
-  // TODO: Remove warning silencers
-  (void) env_var; // Silence unused variable warning
-  (void) val;     // Silence unused variable warning
+  write_env(env_var, val);
 
-  // TODO: Implement export.
-  // HINT: This should be quite simple.
-  IMPLEMENT_ME();
 }
 
 // Changes the current working directory
@@ -184,17 +184,19 @@ void run_cd(CDCommand cmd) {
     return;
   }
 
-  pid_t pid;
+  if (chdir(dir) == -1){
+    perror("ERROR: Unable to change directory");
+  }
 
+  /* pid_t pid;
   pid = fork();
-
   if (pid == -1){
     perror("ERROR: Failed to perform cd");
   }else if (pid == 0){
-    execvp("cd", cmd.dir);
+    execvp("cd", dir);
   }else{
     wait(NULL);
-  }
+  } */
 
   // TODO: Change directory
 
@@ -292,6 +294,8 @@ void child_run_command(Command cmd) {
     break;
 
   case EXPORT:
+    run_export(cmd.export);
+    break;
   case CD:
     run_cd(cmd.cd);
     break;
