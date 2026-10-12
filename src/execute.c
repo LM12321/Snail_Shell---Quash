@@ -29,6 +29,7 @@ char* get_current_directory(bool* should_free) {
   // TODO: Get the current working directory. This will fix the prompt path.
   // HINT: This should be pretty simple
   //IMPLEMENT_ME();
+  
   char __BUF__[2000];
   static char* cwd_str; //static to save it when it leaves scope
   cwd_str = getcwd(__BUF__, sizeof(__BUF__));
@@ -105,10 +106,21 @@ void run_generic(GenericCommand cmd) {
   (void) exec; // Silence unused variable warning
   (void) args; // Silence unused variable warning
 
-  // TODO: Implement run generic
-  IMPLEMENT_ME();
+  pid_t pid;
+  pid = fork();
 
-  perror("ERROR: Failed to execute program");
+  if (pid == 0){
+    if (execvp(exec, args) == -1){
+      perror("ERROR: Failed to execute program");
+    }
+  }else{
+    wait(NULL);
+  }
+
+  // TODO: Implement run generic
+  // IMPLEMENT_ME();
+
+  
 }
 
 // Print strings
@@ -117,11 +129,35 @@ void run_echo(EchoCommand cmd) {
   // string is always NULL) list of strings.
   char** str = cmd.args;
 
-  // TODO: Remove warning silencers
-  (void) str; // Silence unused variable warning
+  /*   
+  size_t number_of_strings = sizeof(str)/sizeof(str[0]);
+  printf("size of str: %d, sizeof elem: %d\n", sizeof(str), sizeof(str[0]));
+  fprintf(stdout, "args = %d:\n", number_of_strings);
+  for (size_t i=0; i < number_of_strings; i++){
+    fprintf(stdout, "%s ", str[i]);
+  }
+  fprintf(stdout, "\n");
+  fprintf(stdout, "end args\n\n"); 
+  */
 
-  // TODO: Implement echo
-  IMPLEMENT_ME();
+
+  
+  pid_t pid;
+  pid = fork();
+
+  if (pid == 0){
+    if (execvp("/bin/echo", str) == -1){
+      perror("ERROR: Failed to execute program");
+    }
+  }else{
+    wait(NULL);
+  }
+
+  // current issues with this implementation
+  // it eats the first arg and only outputs the second and beyond.
+  // also, -e and -n are not properly implemented i don't think
+  // -LW
+  
 
   // Flush the buffer before returning
   fflush(stdout);
@@ -179,29 +215,22 @@ void run_kill(KillCommand cmd) {
 void run_pwd() {
   // TODO: Print the current working directory
 
-  size_t last_dir_idx, i;
+  //size_t last_dir_idx, i;
   // char* cwd = get_current_directory()
   bool should_free = false;
 
   char* cwd = get_current_directory(&should_free);
 
-
-
-
+/* 
   for (i = 0; cwd[i] != '\0'; ++i) {
     if (cwd[i] == '/' && cwd[i] != '\0') {
       last_dir_idx = i + 1;
     }
   }
   fprintf(stdout, "%s\n", cwd + last_dir_idx);
-  
-  /* 
-  for (int i = 0; cwd[i] != '\0'; ++i) {
-    if (cwd[i] == '/' && cwd[i] != '\0') {
-      last_dir_idx = i + 1;
-    }
-  }
-  */
+ */
+
+  fprintf(stdout, "%s\n", cwd);
   // Flush the buffer before returning
   fflush(stdout);
 }
@@ -234,6 +263,7 @@ void child_run_command(Command cmd) {
   CommandType type = get_command_type(cmd);
 
   switch (type) {
+
   case GENERIC:
     run_generic(cmd.generic);
     break;
@@ -252,6 +282,9 @@ void child_run_command(Command cmd) {
 
   case EXPORT:
   case CD:
+    run_cd(cmd.cd);
+    break;
+
   case KILL:
   case EXIT:
   case EOC:
@@ -290,10 +323,17 @@ void parent_run_command(Command cmd) {
     break;
 
   case GENERIC:
+    run_generic(cmd.generic);
+    break;
+
   case ECHO:
+    run_echo(cmd.echo);
+    break;
+
   case PWD:
     run_pwd();
     break;
+
   case JOBS:
   case EXIT:
   case EOC:
