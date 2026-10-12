@@ -168,6 +168,8 @@ void run_echo(EchoCommand cmd) {
 
   // Flush the buffer before returning
   for (size_t i = start_pos; i < argc; i++){
+
+    
     fprintf(stdout, "%s", arg_strs[i]);
     if ((i + 1) != argc){
       fprintf(stdout, " ");
