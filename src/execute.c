@@ -184,12 +184,24 @@ void run_cd(CDCommand cmd) {
     return;
   }
 
+  pid_t pid;
+
+  pid = fork();
+
+  if (pid == -1){
+    perror("ERROR: Failed to perform cd");
+  }else if (pid == 0){
+    execvp("cd", cmd.dir);
+  }else{
+    wait(NULL);
+  }
+
   // TODO: Change directory
 
   // TODO: Update the PWD environment variable to be the new current working
   // directory and optionally update OLD_PWD environment variable to be the old
   // working directory.
-  IMPLEMENT_ME();
+  // IMPLEMENT_ME();
 }
 
 // Sends a signal to all processes contained in a job
