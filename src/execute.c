@@ -10,6 +10,7 @@
 #include "execute.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "quash.h"
 
@@ -126,39 +127,57 @@ void run_generic(GenericCommand cmd) {
 void run_echo(EchoCommand cmd) {
   // Print an array of strings. The args array is a NULL terminated (last
   // string is always NULL) list of strings.
-  char** strs = cmd.args;
+  size_t argc = 0;
+  size_t start_pos = 0;
 
-  /*   
-  size_t number_of_strings = sizeof(str)/sizeof(str[0]);
-  printf("size of str: %d, sizeof elem: %d\n", sizeof(str), sizeof(str[0]));
-  fprintf(stdout, "args = %d:\n", number_of_strings);
-  for (size_t i=0; i < number_of_strings; i++){
-    fprintf(stdout, "%s ", str[i]);
-  }
-  fprintf(stdout, "\n");
-  fprintf(stdout, "end args\n\n"); 
-  */
+  char **arg_strs = cmd.args;
+  bool print_new_line = true;
 
+  // bool allow_options = false;
 
-  
-  pid_t pid;
-  pid = fork();
-
-  if (pid == 0){
-    if (execvp("/bin/echo", strs) == -1){
-      perror("ERROR: Failed to execute program");
-    }
-  }else{
-    wait(NULL);
+  // get arg_count
+  while(*arg_strs != NULL){
+    arg_strs++;
+    argc++;
   }
 
-  // current issues with this implementation
-  // it eats the first arg and only outputs the second and beyond.
-  // also, -e and -n are not properly implemented i don't think
-  // -LW
+  for (size_t i = 0; i < argc; i++){
+    arg_strs--;
+  }
+  // fprintf(stdout, "argc = %d\n", argc); // for debugging in case you want to see argc
+
   
+  if (arg_strs[0] == NULL)
+  {
+    ;
+  }
+  else if (strcmp(arg_strs[0], "--help") == 0 && argc == 1)  // 0 means that the strings match
+  {
+    fprintf(stdout, "insert man page here");
+  }
+  else if (strcmp(arg_strs[0], "--version") == 0 && argc == 1)
+  {
+    fprintf(stdout, "insert version here");
+  }
+  else if (strcmp(arg_strs[0], "-n") == 0 && argc >= 2)
+  {
+    start_pos++;
+    print_new_line = false;
+
+  }
 
   // Flush the buffer before returning
+  for (size_t i = start_pos; i < argc; i++){
+    fprintf(stdout, "%s", arg_strs[i]);
+    if ((i + 1) != argc){
+      fprintf(stdout, " ");
+    }
+  }
+
+  if (print_new_line == true){
+    fprintf(stdout, "\n");
+  }
+
   fflush(stdout);
 }
 
