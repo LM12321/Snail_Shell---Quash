@@ -30,16 +30,15 @@ char* get_current_directory(bool* should_free) {
   // HINT: This should be pretty simple
   //IMPLEMENT_ME();
   
-  char __BUF__[2000];
-  static char* cwd_str; //static to save it when it leaves scope
-  cwd_str = getcwd(__BUF__, sizeof(__BUF__));
+  char* cwd_str; //static to save it when it leaves scope
+  cwd_str = (char*)getcwd(NULL, 0);  //this is a malloc
+
   if (cwd_str == NULL){
-    fprintf(stderr, "Size of cwd is too large\n");
+    perror("ERROR: Unable to print CWD");
   }
 
   // Change this to true if necessary
-  *should_free = false;
-  
+  *should_free = true;
 
   return cwd_str;
 }
@@ -101,10 +100,6 @@ void run_generic(GenericCommand cmd) {
   // in the array is the executable
   char* exec = cmd.args[0];
   char** args = cmd.args;
-
-  // TODO: Remove warning silencers
-  (void) exec; // Silence unused variable warning
-  (void) args; // Silence unused variable warning
 
   pid_t pid;
   pid = fork();
@@ -231,6 +226,10 @@ void run_pwd() {
  */
 
   fprintf(stdout, "%s\n", cwd);
+
+  if (should_free == true){
+    free(cwd);
+  }
   // Flush the buffer before returning
   fflush(stdout);
 }
