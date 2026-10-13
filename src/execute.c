@@ -188,6 +188,7 @@ void run_echo(EchoCommand cmd) {
 void run_export(ExportCommand cmd) {
   // Write an environment variable
   const char* env_var = cmd.env_var;
+  printf("env_var = %s\n", env_var);
   const char* val = cmd.val;
 
   write_env(env_var, val);
@@ -204,27 +205,20 @@ void run_cd(CDCommand cmd) {
     perror("ERROR: Failed to resolve path");
     return;
   }
+  
 
+  bool should_free = true;
+  char* old_dir = get_current_directory(&should_free);
+  
   if (chdir(dir) == -1){
     perror("ERROR: Unable to change directory");
+    free(old_dir);
   }
 
-  /* pid_t pid;
-  pid = fork();
-  if (pid == -1){
-    perror("ERROR: Failed to perform cd");
-  }else if (pid == 0){
-    execvp("cd", dir);
-  }else{
-    wait(NULL);
-  } */
+  write_env("OLD_PWD", old_dir);  
+  write_env("PWD", dir);
 
-  // TODO: Change directory
-
-  // TODO: Update the PWD environment variable to be the new current working
-  // directory and optionally update OLD_PWD environment variable to be the old
-  // working directory.
-  // IMPLEMENT_ME();
+  free(old_dir);
 }
 
 // Sends a signal to all processes contained in a job
@@ -317,6 +311,7 @@ void child_run_command(Command cmd) {
   case EXPORT:
     run_export(cmd.export);
     break;
+
   case CD:
     run_cd(cmd.cd);
     break;
