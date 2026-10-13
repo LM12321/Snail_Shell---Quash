@@ -1,95 +1,95 @@
-==3282636== Memcheck, a memory error detector
-==3282636== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==3282636== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==3282636== Command: /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/quash
-==3282636== 
-==3282667== 
-==3282667== HEAP SUMMARY:
-==3282667==     in use at exit: 0 bytes in 0 blocks
-==3282667==   total heap usage: 7 allocs, 7 frees, 25,994 bytes allocated
-==3282667== 
-==3282667== All heap blocks were freed -- no leaks are possible
-==3282667== 
-==3282667== For lists of detected and suppressed errors, rerun with: -s
-==3282667== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282766== 
-==3282766== HEAP SUMMARY:
-==3282766==     in use at exit: 0 bytes in 0 blocks
-==3282766==   total heap usage: 10 allocs, 10 frees, 38,381 bytes allocated
-==3282766== 
-==3282766== All heap blocks were freed -- no leaks are possible
-==3282766== 
-==3282766== For lists of detected and suppressed errors, rerun with: -s
-==3282766== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282853== 
-==3282853== HEAP SUMMARY:
-==3282853==     in use at exit: 0 bytes in 0 blocks
-==3282853==   total heap usage: 13 allocs, 13 frees, 39,725 bytes allocated
-==3282853== 
-==3282853== All heap blocks were freed -- no leaks are possible
-==3282853== 
-==3282853== For lists of detected and suppressed errors, rerun with: -s
-==3282853== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282861== 
-==3282861== HEAP SUMMARY:
-==3282861==     in use at exit: 0 bytes in 0 blocks
-==3282861==   total heap usage: 19 allocs, 19 frees, 47,312 bytes allocated
-==3282861== 
-==3282861== All heap blocks were freed -- no leaks are possible
-==3282861== 
-==3282861== For lists of detected and suppressed errors, rerun with: -s
-==3282861== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282895== 
-==3282895== HEAP SUMMARY:
-==3282895==     in use at exit: 0 bytes in 0 blocks
-==3282895==   total heap usage: 19 allocs, 19 frees, 47,312 bytes allocated
-==3282895== 
-==3282895== All heap blocks were freed -- no leaks are possible
-==3282895== 
-==3282895== For lists of detected and suppressed errors, rerun with: -s
-==3282895== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282924== 
-==3282924== HEAP SUMMARY:
-==3282924==     in use at exit: 0 bytes in 0 blocks
-==3282924==   total heap usage: 22 allocs, 22 frees, 48,656 bytes allocated
-==3282924== 
-==3282924== All heap blocks were freed -- no leaks are possible
-==3282924== 
-==3282924== For lists of detected and suppressed errors, rerun with: -s
-==3282924== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282930== 
-==3282930== HEAP SUMMARY:
-==3282930==     in use at exit: 0 bytes in 0 blocks
-==3282930==   total heap usage: 22 allocs, 22 frees, 48,656 bytes allocated
-==3282930== 
-==3282930== All heap blocks were freed -- no leaks are possible
-==3282930== 
-==3282930== For lists of detected and suppressed errors, rerun with: -s
-==3282930== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282959== 
-==3282959== HEAP SUMMARY:
-==3282959==     in use at exit: 0 bytes in 0 blocks
-==3282959==   total heap usage: 25 allocs, 25 frees, 50,000 bytes allocated
-==3282959== 
-==3282959== All heap blocks were freed -- no leaks are possible
-==3282959== 
-==3282959== For lists of detected and suppressed errors, rerun with: -s
-==3282959== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282991== 
-==3282991== HEAP SUMMARY:
-==3282991==     in use at exit: 0 bytes in 0 blocks
-==3282991==   total heap usage: 28 allocs, 28 frees, 51,344 bytes allocated
-==3282991== 
-==3282991== All heap blocks were freed -- no leaks are possible
-==3282991== 
-==3282991== For lists of detected and suppressed errors, rerun with: -s
-==3282991== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282636== 
-==3282636== HEAP SUMMARY:
-==3282636==     in use at exit: 0 bytes in 0 blocks
-==3282636==   total heap usage: 28 allocs, 28 frees, 51,344 bytes allocated
-==3282636== 
-==3282636== All heap blocks were freed -- no leaks are possible
-==3282636== 
-==3282636== For lists of detected and suppressed errors, rerun with: -s
-==3282636== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425332== Memcheck, a memory error detector
+==3425332== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3425332== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==3425332== Command: /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/quash
+==3425332== 
+==3425418== 
+==3425418== HEAP SUMMARY:
+==3425418==     in use at exit: 0 bytes in 0 blocks
+==3425418==   total heap usage: 7 allocs, 7 frees, 25,994 bytes allocated
+==3425418== 
+==3425418== All heap blocks were freed -- no leaks are possible
+==3425418== 
+==3425418== For lists of detected and suppressed errors, rerun with: -s
+==3425418== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425550== 
+==3425550== HEAP SUMMARY:
+==3425550==     in use at exit: 0 bytes in 0 blocks
+==3425550==   total heap usage: 10 allocs, 10 frees, 38,381 bytes allocated
+==3425550== 
+==3425550== All heap blocks were freed -- no leaks are possible
+==3425550== 
+==3425550== For lists of detected and suppressed errors, rerun with: -s
+==3425550== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425609== 
+==3425609== HEAP SUMMARY:
+==3425609==     in use at exit: 0 bytes in 0 blocks
+==3425609==   total heap usage: 13 allocs, 13 frees, 39,725 bytes allocated
+==3425609== 
+==3425609== All heap blocks were freed -- no leaks are possible
+==3425609== 
+==3425609== For lists of detected and suppressed errors, rerun with: -s
+==3425609== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425622== 
+==3425622== HEAP SUMMARY:
+==3425622==     in use at exit: 0 bytes in 0 blocks
+==3425622==   total heap usage: 19 allocs, 19 frees, 47,312 bytes allocated
+==3425622== 
+==3425622== All heap blocks were freed -- no leaks are possible
+==3425622== 
+==3425622== For lists of detected and suppressed errors, rerun with: -s
+==3425622== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425650== 
+==3425650== HEAP SUMMARY:
+==3425650==     in use at exit: 0 bytes in 0 blocks
+==3425650==   total heap usage: 19 allocs, 19 frees, 47,312 bytes allocated
+==3425650== 
+==3425650== All heap blocks were freed -- no leaks are possible
+==3425650== 
+==3425650== For lists of detected and suppressed errors, rerun with: -s
+==3425650== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425678== 
+==3425678== HEAP SUMMARY:
+==3425678==     in use at exit: 0 bytes in 0 blocks
+==3425678==   total heap usage: 22 allocs, 22 frees, 48,656 bytes allocated
+==3425678== 
+==3425678== All heap blocks were freed -- no leaks are possible
+==3425678== 
+==3425678== For lists of detected and suppressed errors, rerun with: -s
+==3425678== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425724== 
+==3425724== HEAP SUMMARY:
+==3425724==     in use at exit: 0 bytes in 0 blocks
+==3425724==   total heap usage: 22 allocs, 22 frees, 48,656 bytes allocated
+==3425724== 
+==3425724== All heap blocks were freed -- no leaks are possible
+==3425724== 
+==3425724== For lists of detected and suppressed errors, rerun with: -s
+==3425724== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425737== 
+==3425737== HEAP SUMMARY:
+==3425737==     in use at exit: 0 bytes in 0 blocks
+==3425737==   total heap usage: 25 allocs, 25 frees, 50,000 bytes allocated
+==3425737== 
+==3425737== All heap blocks were freed -- no leaks are possible
+==3425737== 
+==3425737== For lists of detected and suppressed errors, rerun with: -s
+==3425737== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425775== 
+==3425775== HEAP SUMMARY:
+==3425775==     in use at exit: 0 bytes in 0 blocks
+==3425775==   total heap usage: 28 allocs, 28 frees, 51,344 bytes allocated
+==3425775== 
+==3425775== All heap blocks were freed -- no leaks are possible
+==3425775== 
+==3425775== For lists of detected and suppressed errors, rerun with: -s
+==3425775== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425332== 
+==3425332== HEAP SUMMARY:
+==3425332==     in use at exit: 0 bytes in 0 blocks
+==3425332==   total heap usage: 28 allocs, 28 frees, 51,344 bytes allocated
+==3425332== 
+==3425332== All heap blocks were freed -- no leaks are possible
+==3425332== 
+==3425332== For lists of detected and suppressed errors, rerun with: -s
+==3425332== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -190,7 +190,7 @@ void run_echo(EchoCommand cmd) {
 void run_export(ExportCommand cmd) {
   // Write an environment variable
   const char* env_var = cmd.env_var;
-  printf("env_var = %s\n", env_var);
+  // printf("env_var = %s\n", env_var); For DEBUG to see env_var
   const char* val = cmd.val;
 
   write_env(env_var, val);

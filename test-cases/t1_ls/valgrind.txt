@@ -1,23 +1,23 @@
-==3282308== Memcheck, a memory error detector
-==3282308== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==3282308== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==3282308== Command: /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/quash
-==3282308== 
-==3282650== 
-==3282650== HEAP SUMMARY:
-==3282650==     in use at exit: 0 bytes in 0 blocks
-==3282650==   total heap usage: 7 allocs, 7 frees, 25,994 bytes allocated
-==3282650== 
-==3282650== All heap blocks were freed -- no leaks are possible
-==3282650== 
-==3282650== For lists of detected and suppressed errors, rerun with: -s
-==3282650== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
-==3282308== 
-==3282308== HEAP SUMMARY:
-==3282308==     in use at exit: 0 bytes in 0 blocks
-==3282308==   total heap usage: 7 allocs, 7 frees, 25,994 bytes allocated
-==3282308== 
-==3282308== All heap blocks were freed -- no leaks are possible
-==3282308== 
-==3282308== For lists of detected and suppressed errors, rerun with: -s
-==3282308== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425008== Memcheck, a memory error detector
+==3425008== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3425008== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==3425008== Command: /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/quash
+==3425008== 
+==3425367== 
+==3425367== HEAP SUMMARY:
+==3425367==     in use at exit: 0 bytes in 0 blocks
+==3425367==   total heap usage: 7 allocs, 7 frees, 25,994 bytes allocated
+==3425367== 
+==3425367== All heap blocks were freed -- no leaks are possible
+==3425367== 
+==3425367== For lists of detected and suppressed errors, rerun with: -s
+==3425367== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3425008== 
+==3425008== HEAP SUMMARY:
+==3425008==     in use at exit: 0 bytes in 0 blocks
+==3425008==   total heap usage: 7 allocs, 7 frees, 25,994 bytes allocated
+==3425008== 
+==3425008== All heap blocks were freed -- no leaks are possible
+==3425008== 
+==3425008== For lists of detected and suppressed errors, rerun with: -s
+==3425008== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

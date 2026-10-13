@@ -1,7 +1,0 @@
-2,3d1
-< env_var = PWD
-< env_var = PWD
-5,7d2
-< env_var = PATH
-< env_var = PATH
-< env_var = PATH

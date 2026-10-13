@@ -1,9 +1,3 @@
-env_var = SMALL_FILE
-env_var = SMALL_FILE
-env_var = LARGE_FILE
-env_var = SMALL_FILE
-env_var = LARGE_FILE
-env_var = OUT_FILE
 ==#== 
 ==#== All heap blocks were freed -- no leaks are possible
 ==#==    definitely lost: 0 bytes in 0 blocks
@@ -27,16 +21,4 @@ env_var = OUT_FILE
 ==#==   total heap usage: # allocs, 0 frees, 0 bytes allocated
 ==#==   total heap usage: # allocs, 0 frees, # bytes allocated
 ==#==   total heap usage: # allocs, # frees, # bytes allocated
-env_var = SMALL_FILE
-env_var = LARGE_FILE
-env_var = OUT_FILE
 TEST FILE 1
-env_var = SMALL_FILE
-env_var = LARGE_FILE
-env_var = OUT_FILE
-env_var = SMALL_FILE
-env_var = LARGE_FILE
-env_var = OUT_FILE
-env_var = SMALL_FILE
-env_var = LARGE_FILE
-env_var = OUT_FILE
