@@ -1,1 +1,59 @@
-./run_tests.bash: line 280: valgrind: command not found
+==3282624== Memcheck, a memory error detector
+==3282624== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3282624== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==3282624== Command: /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/quash
+==3282624== 
+IMPLEMENT ME: src/execute.c(line 72): check_jobs_bg_status()
+==3282664== 
+==3282664== HEAP SUMMARY:
+==3282664==     in use at exit: 0 bytes in 0 blocks
+==3282664==   total heap usage: 7 allocs, 7 frees, 25,994 bytes allocated
+==3282664== 
+==3282664== All heap blocks were freed -- no leaks are possible
+==3282664== 
+==3282664== For lists of detected and suppressed errors, rerun with: -s
+==3282664== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+IMPLEMENT ME: src/execute.c(line 457): run_script()
+IMPLEMENT ME: src/execute.c(line 72): check_jobs_bg_status()
+==3283040== 
+==3283040== HEAP SUMMARY:
+==3283040==     in use at exit: 0 bytes in 0 blocks
+==3283040==   total heap usage: 10 allocs, 10 frees, 27,338 bytes allocated
+==3283040== 
+==3283040== All heap blocks were freed -- no leaks are possible
+==3283040== 
+==3283040== For lists of detected and suppressed errors, rerun with: -s
+==3283040== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+IMPLEMENT ME: src/execute.c(line 236): run_kill()
+IMPLEMENT ME: src/execute.c(line 452): run_script()
+IMPLEMENT ME: src/execute.c(line 72): check_jobs_bg_status()
+==3283042== 
+==3283042== HEAP SUMMARY:
+==3283042==     in use at exit: 0 bytes in 0 blocks
+==3283042==   total heap usage: 13 allocs, 13 frees, 28,682 bytes allocated
+==3283042== 
+==3283042== All heap blocks were freed -- no leaks are possible
+==3283042== 
+==3283042== For lists of detected and suppressed errors, rerun with: -s
+==3283042== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+IMPLEMENT ME: src/execute.c(line 452): run_script()
+IMPLEMENT ME: src/execute.c(line 72): check_jobs_bg_status()
+==3283043== 
+==3283043== HEAP SUMMARY:
+==3283043==     in use at exit: 0 bytes in 0 blocks
+==3283043==   total heap usage: 17 allocs, 17 frees, 38,218 bytes allocated
+==3283043== 
+==3283043== All heap blocks were freed -- no leaks are possible
+==3283043== 
+==3283043== For lists of detected and suppressed errors, rerun with: -s
+==3283043== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+IMPLEMENT ME: src/execute.c(line 452): run_script()
+==3282624== 
+==3282624== HEAP SUMMARY:
+==3282624==     in use at exit: 0 bytes in 0 blocks
+==3282624==   total heap usage: 17 allocs, 17 frees, 38,218 bytes allocated
+==3282624== 
+==3282624== All heap blocks were freed -- no leaks are possible
+==3282624== 
+==3282624== For lists of detected and suppressed errors, rerun with: -s
+==3282624== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

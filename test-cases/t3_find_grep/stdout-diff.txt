@@ -1,6 +1,9 @@
-0a1,5
-> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t3_find_grep/sandbox/dir1/valgrind_expected.txt
-> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t3_find_grep/sandbox/dir3/dir3-1/valgrind_expected.txt
-> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t3_find_grep/sandbox/dir3/valgrind_expected.txt
-> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t3_find_grep/sandbox/.valgrind_expected.txt
-> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t3_find_grep/sandbox/valgrind_expected.txt
+1d0
+< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t3_find_grep/sandbox/dir1/lorem_ipsum.txt
+3,6d1
+< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t3_find_grep/sandbox/dir2/test1.txt
+< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t3_find_grep/sandbox/dir2/test2.txt
+< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t3_find_grep/sandbox/dir2/test3.txt
+< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t3_find_grep/sandbox/dir3/dir3-1/lorem_ipsum.txt
+9d3
+< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t3_find_grep/sandbox/lorem_ipsum.txt

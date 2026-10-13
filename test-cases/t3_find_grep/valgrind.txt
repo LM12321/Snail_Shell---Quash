@@ -1,0 +1,32 @@
+==3282623== Memcheck, a memory error detector
+==3282623== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3282623== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==3282623== Command: /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/quash
+==3282623== 
+==3282671== 
+==3282671== HEAP SUMMARY:
+==3282671==     in use at exit: 0 bytes in 0 blocks
+==3282671==   total heap usage: 9 allocs, 9 frees, 28,058 bytes allocated
+==3282671== 
+==3282671== All heap blocks were freed -- no leaks are possible
+==3282671== 
+==3282671== For lists of detected and suppressed errors, rerun with: -s
+==3282671== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3282793== 
+==3282793== HEAP SUMMARY:
+==3282793==     in use at exit: 0 bytes in 0 blocks
+==3282793==   total heap usage: 9 allocs, 9 frees, 28,058 bytes allocated
+==3282793== 
+==3282793== All heap blocks were freed -- no leaks are possible
+==3282793== 
+==3282793== For lists of detected and suppressed errors, rerun with: -s
+==3282793== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3282623== 
+==3282623== HEAP SUMMARY:
+==3282623==     in use at exit: 0 bytes in 0 blocks
+==3282623==   total heap usage: 9 allocs, 9 frees, 28,058 bytes allocated
+==3282623== 
+==3282623== All heap blocks were freed -- no leaks are possible
+==3282623== 
+==3282623== For lists of detected and suppressed errors, rerun with: -s
+==3282623== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
