@@ -161,15 +161,15 @@ void run_echo(EchoCommand cmd) {
   }
   else if (strcmp(arg_strs[0], "-n") == 0 && argc >= 2)
   {
-    start_pos++;
+    start_pos++;  // increment starting position to account for -n
     print_new_line = false;
 
   }
 
-  // Flush the buffer before returning
+ 
   for (size_t i = start_pos; i < argc; i++){
 
-    
+  
     fprintf(stdout, "%s", arg_strs[i]);
     if ((i + 1) != argc){
       fprintf(stdout, " ");
@@ -180,7 +180,9 @@ void run_echo(EchoCommand cmd) {
     fprintf(stdout, "\n");
   }
 
+  // Flush the buffer before returning
   fflush(stdout);
+  
 }
 
 
@@ -244,15 +246,6 @@ void run_pwd() {
   bool should_free = false;
 
   char* cwd = get_current_directory(&should_free);
-
-/* 
-  for (i = 0; cwd[i] != '\0'; ++i) {
-    if (cwd[i] == '/' && cwd[i] != '\0') {
-      last_dir_idx = i + 1;
-    }
-  }
-  fprintf(stdout, "%s\n", cwd + last_dir_idx);
- */
 
   fprintf(stdout, "%s\n", cwd);
 
