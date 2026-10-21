@@ -1,0 +1,2 @@
+0a1
+> /Users/loganwhitt/Desktop/_School/EECS_678--Operating_Systems/_Lab/Snail/quash/test-cases/t1_pwd/sandbox

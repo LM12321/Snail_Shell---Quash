@@ -1,2 +1,0 @@
-/home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t2_find/sandbox/dir3/dir3-1/valgrind_expected.txt
-/home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t2_find/sandbox/dir3/valgrind_expected.txt

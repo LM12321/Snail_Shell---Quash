@@ -1,8 +1,5 @@
-1,3c1,3
-< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t4_builtin/sandbox
-< /home/l099w160/Desktop/Labs/EECS678-Lab/Projects/Snail_Shell---Quash/test-cases/t4_builtin/sandbox
-< hello\\n
----
+0a1,4
 > sandbox
 > sandbox
+> hello
 > hello

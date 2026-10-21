@@ -57,7 +57,7 @@ const char* lookup_env(const char* env_var) {
 void write_env(const char* env_var, const char* val){
 
   // this value when non-zero will overwrite the current env_var if already set
-  const size_t overwrite = 1; 
+  const bool overwrite = true; 
   if (setenv(env_var, val, overwrite) == -1){
     perror("ERROR: Unable to export");
   }  
@@ -310,6 +310,8 @@ void child_run_command(Command cmd) {
     break;
 
   case KILL:
+    run_kill(cmd.kill);
+    break;
   case EXIT:
   case EOC:
     break;
