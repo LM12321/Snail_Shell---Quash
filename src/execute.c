@@ -29,13 +29,15 @@
 char* get_current_directory(bool* should_free) {
   // TODO: Get the current working directory. This will fix the prompt path.
   // HINT: This should be pretty simple
-  //IMPLEMENT_ME();
   
   char* cwd_str; //static to save it when it leaves scope
   cwd_str = (char*)getcwd(NULL, 0);  //this is a malloc
 
   if (cwd_str == NULL){
     perror("ERROR: Unable to print CWD");
+    exit(EXIT_FAILURE);
+    // either that or return NULL
+    return NULL;
   }
 
   // Change this to true if necessary
@@ -112,6 +114,7 @@ void run_generic(GenericCommand cmd) {
   if (pid == 0){
     if (execvp(exec, args) == -1){
       perror("ERROR: Failed to execute program");
+      exit(EXIT_FAILURE);
     }
   }else{
     wait(NULL);
@@ -228,6 +231,7 @@ void run_kill(KillCommand cmd) {
   int signal = cmd.sig;
   int job_id = cmd.job;
 
+  printf("signal = %d, job_id = %d\n");
   // TODO: Remove warning silencers
   (void) signal; // Silence unused variable warning
   (void) job_id; // Silence unused variable warning
@@ -312,6 +316,7 @@ void child_run_command(Command cmd) {
   case KILL:
     run_kill(cmd.kill);
     break;
+
   case EXIT:
   case EOC:
     break;
@@ -361,12 +366,15 @@ void parent_run_command(Command cmd) {
     break;
 
   case JOBS:
+    run_jobs();
+
   case EXIT:
   case EOC:
     break;
 
   default:
     fprintf(stderr, "Unknown command type: %d\n", type);
+    break;
   }
 }
 
@@ -403,8 +411,15 @@ void create_process(CommandHolder holder) {
 
   // TODO: Setup pipes, redirects, and new process
 
-  /* DO THIS ASAP */
-  //IMPLEMENT_ME();
+  if (r_app == true && r_out == false){
+    fprintf(stderr, "ERROR: redirect output is false while redirect append is true\n");
+    return; // returning because exit would kill quash
+  }
+
+  int fds[2];
+  pipe(fds);
+
+
 
   pid_t pid = fork();
   if (pid == -1){
@@ -412,12 +427,12 @@ void create_process(CommandHolder holder) {
   }
   else if (pid == 0){
     exit(0);
-    child_run_command(holder.cmd); // This should be done in the parent branch of a fork 
+    child_run_command(holder.cmd); 
 
   }
   else{
     wait(NULL);
-    parent_run_command(holder.cmd); // This should be done in the child branch of a fork
+    parent_run_command(holder.cmd);
   }                  
   
 }
