@@ -10,6 +10,7 @@
 #include "execute.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "quash.h"
 
@@ -49,14 +50,18 @@ const char* lookup_env(const char* env_var) {
   // to interpret variables from the command line and display the prompt
   // correctly
   // HINT: This should be pretty simple
-  // IMPLEMENT_ME();
 
-  
+  return getenv(env_var);
+}
 
-  // TODO: Remove warning silencers
-  // (void) env_var; // Silence unused variable warning
+void write_env(const char* env_var, const char* val){
 
-  return env_var;
+  // this value when non-zero will overwrite the current env_var if already set
+  const bool overwrite = true; 
+  if (setenv(env_var, val, overwrite) == -1){
+    perror("ERROR: Unable to export");
+  }  
+
 }
 
 // Check the status of background jobs
@@ -122,55 +127,74 @@ void run_generic(GenericCommand cmd) {
 void run_echo(EchoCommand cmd) {
   // Print an array of strings. The args array is a NULL terminated (last
   // string is always NULL) list of strings.
-  char** str = cmd.args;
+  size_t argc = 0;
+  size_t start_pos = 0;
 
-  /*   
-  size_t number_of_strings = sizeof(str)/sizeof(str[0]);
-  printf("size of str: %d, sizeof elem: %d\n", sizeof(str), sizeof(str[0]));
-  fprintf(stdout, "args = %d:\n", number_of_strings);
-  for (size_t i=0; i < number_of_strings; i++){
-    fprintf(stdout, "%s ", str[i]);
+  char **arg_strs = cmd.args;
+  bool print_new_line = true;
+
+  // bool allow_options = false;
+
+  // get arg_count
+  while(*arg_strs != NULL){
+    arg_strs++;
+    argc++;
   }
-  fprintf(stdout, "\n");
-  fprintf(stdout, "end args\n\n"); 
-  */
 
+  for (size_t i = 0; i < argc; i++){
+    arg_strs--;
+  }
+  // fprintf(stdout, "argc = %d\n", argc); // for debugging in case you want to see argc
 
   
-  pid_t pid;
-  pid = fork();
+  if (arg_strs[0] == NULL)
+  {
+    ;
+  }
+  else if (strcmp(arg_strs[0], "--help") == 0 && argc == 1)  // 0 means that the strings match
+  {
+    fprintf(stdout, "insert man page here");
+  }
+  else if (strcmp(arg_strs[0], "--version") == 0 && argc == 1)
+  {
+    fprintf(stdout, "insert version here");
+  }
+  else if (strcmp(arg_strs[0], "-n") == 0 && argc >= 2)
+  {
+    start_pos++;  // increment starting position to account for -n
+    print_new_line = false;
 
-  if (pid == 0){
-    if (execvp("/bin/echo", str) == -1){
-      perror("ERROR: Failed to execute program");
+  }
+
+ 
+  for (size_t i = start_pos; i < argc; i++){
+
+  
+    fprintf(stdout, "%s", arg_strs[i]);
+    if ((i + 1) != argc){
+      fprintf(stdout, " ");
     }
-  }else{
-    wait(NULL);
   }
 
-  // current issues with this implementation
-  // it eats the first arg and only outputs the second and beyond.
-  // also, -e and -n are not properly implemented i don't think
-  // -LW
-  
+  if (print_new_line == true){
+    fprintf(stdout, "\n");
+  }
 
   // Flush the buffer before returning
   fflush(stdout);
+  
 }
+
 
 // Sets an environment variable
 void run_export(ExportCommand cmd) {
   // Write an environment variable
   const char* env_var = cmd.env_var;
+  // printf("env_var = %s\n", env_var); For DEBUG to see env_var
   const char* val = cmd.val;
 
-  // TODO: Remove warning silencers
-  (void) env_var; // Silence unused variable warning
-  (void) val;     // Silence unused variable warning
+  write_env(env_var, val);
 
-  // TODO: Implement export.
-  // HINT: This should be quite simple.
-  IMPLEMENT_ME();
 }
 
 // Changes the current working directory
@@ -183,13 +207,20 @@ void run_cd(CDCommand cmd) {
     perror("ERROR: Failed to resolve path");
     return;
   }
+  
 
-  // TODO: Change directory
+  bool should_free = true;
+  char* old_dir = get_current_directory(&should_free);
+  
+  if (chdir(dir) == -1){
+    perror("ERROR: Unable to change directory");
+    free(old_dir);
+  }
 
-  // TODO: Update the PWD environment variable to be the new current working
-  // directory and optionally update OLD_PWD environment variable to be the old
-  // working directory.
-  IMPLEMENT_ME();
+  write_env("OLD_PWD", old_dir);  
+  write_env("PWD", dir);
+
+  free(old_dir);
 }
 
 // Sends a signal to all processes contained in a job
@@ -215,15 +246,6 @@ void run_pwd() {
   bool should_free = false;
 
   char* cwd = get_current_directory(&should_free);
-
-/* 
-  for (i = 0; cwd[i] != '\0'; ++i) {
-    if (cwd[i] == '/' && cwd[i] != '\0') {
-      last_dir_idx = i + 1;
-    }
-  }
-  fprintf(stdout, "%s\n", cwd + last_dir_idx);
- */
 
   fprintf(stdout, "%s\n", cwd);
 
@@ -280,11 +302,16 @@ void child_run_command(Command cmd) {
     break;
 
   case EXPORT:
+    run_export(cmd.export);
+    break;
+
   case CD:
     run_cd(cmd.cd);
     break;
 
   case KILL:
+    run_kill(cmd.kill);
+    break;
   case EXIT:
   case EOC:
     break;
