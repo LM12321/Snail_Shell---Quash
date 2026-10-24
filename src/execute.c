@@ -53,22 +53,19 @@ typedef struct Job{
 } Job;
 
 
-
-
-
-
-IMPLEMENT_DEQUE_STRUCT(JobQueue, Job);
-IMPLEMENT_DEQUE(JobQueue, Job);
-PROTOTYPE_DEQUE(JobQueue, Job);
+IMPLEMENT_DEQUE_STRUCT(JobQueue, Job*);
+IMPLEMENT_DEQUE(JobQueue, Job*);
+PROTOTYPE_DEQUE(JobQueue, Job*);
 
 bool is_job_queue_initialized = false;
 JobQueue job_queue;
 
 int max_job_id = 1;
 
-void assign_job_id(Job* job){
+
+
+void assign_background_job_id(Job* job){
   job->job_id = max_job_id;
-  max_job_id++;
 }
 
 void free_job(Job* job){
@@ -135,10 +132,54 @@ void check_jobs_bg_status() {
   // TODO: Check on the statuses of all processes belonging to all background
   // jobs. This function should remove jobs from the jobs queue once all
   // processes belonging to a job have completed.
-  // IMPLEMENT_ME();
 
-  // TODO: Once jobs are implemented, uncomment and fill the following line
-  // print_job_bg_complete(job_id, pid, cmd);
+
+  size_t len = length_JobQueue(&job_queue);
+  Job** JobArray = as_array_JobQueue(&job_queue, &len);
+
+  int completed_processes, result;
+
+
+  if (len >= 0){
+    len = 1;
+  }
+  JobQueue new_job_queue = new_JobQueue(len);
+
+  for (int jq_i = 0; jq_i < len; jq_i++){
+    completed_processes = 0;
+    result = 0;
+    Job* job = JobArray[jq_i];
+
+    for (int i = 0; i < job->total_processes; i++){
+      int wstatus;
+      result = waitpid(job->all_pids[i], &wstatus, WNOHANG);
+      // WNOHANG doesn't wait if child process is not finished
+
+      if (result == -1){
+        perror("ERROR: on waitpid for background processes");
+      }else if (result == 0){
+        completed_processes += 1;
+      }else{
+        break; //
+      }
+
+      if (completed_processes != job->total_processes){  // all processes not finished
+        push_back_JobQueue(&new_job_queue, job);
+        // add it to the new job queue
+      }else{
+        // ALL PROCESSES FINISHED!
+        print_job_bg_complete(job->job_id, job->pid, job->cmd_str);
+      }
+    }
+
+    
+  }
+  
+
+  
+  
+
+ 
 }
 
 // Prints the job id number, the process id of the first process belonging to
@@ -334,8 +375,16 @@ void run_pwd() {
 // Prints all background jobs currently in the job list to stdout
 void run_jobs() {
   // TODO: Print background jobs
-  IMPLEMENT_ME();
-
+  size_t len = length_JobQueue(&job_queue);
+  Job** JobArray = as_array_JobQueue(&job_queue, &len);
+  for (int i = 0; i < len; i++){
+    Job* job = JobArray[i];
+    fprintf(stdout, "[%d]\t",job->job_id);
+    fprintf(stdout, "%d\t", job->pid);
+    fprintf(stdout, "%s\t", job->cmd_str);
+    fprintf(stdout, "\n");
+  }
+  free(JobArray);
   // Flush the buffer before returning
   fflush(stdout);
 }
@@ -514,7 +563,7 @@ pid_t create_process(CommandHolder holder, int previous_read, int fds[2]) {
         exit(EXIT_FAILURE);
       }
     }
-    
+
     // ---- PIPE IN ----
     if (p_in && previous_read != -1){ // check if there's a previous in file to map
       if (dup2(previous_read, STDIN_FILENO) == -1){
@@ -614,7 +663,7 @@ void run_script(CommandHolder* holders) {
     previous_read = fds[READ];  // assign previous read file descriptor to the previous_read
   }
 
-  
+  job->job_id = 0;
 
   // works because fds[READ] would be only thing left open
   if (previous_read != -1){
@@ -624,7 +673,7 @@ void run_script(CommandHolder* holders) {
   job->cmd_str = get_command_string();
   job->total_processes = total_processes;
   
-  assign_job_id(job);
+  
   
   
   if (!(holders[0].flags & BACKGROUND)) {
@@ -640,18 +689,15 @@ void run_script(CommandHolder* holders) {
   else {
     // A background job.
     // TODO: Push the new job to the job queue
-
+    assign_background_job_id(job); // only need to assign if its a background job
     if (is_job_queue_initialized == false){
       job_queue = new_JobQueue(1);
       is_job_queue_initialized = true;
     }
     
-    // push_back_JobQueue(&job_queue, )
+    push_back_JobQueue(&job_queue, job);
 
     
-    // IMPLEMENT_ME();
-
-    // TODO: Once jobs are implemented, uncomment and fill the following line
-    // print_job_bg_start(job_id, pid, cmd);
+    print_job_bg_start(job->job_id, job->pid, job->cmd_str);
   }
 }
