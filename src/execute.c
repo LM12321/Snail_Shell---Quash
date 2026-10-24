@@ -140,7 +140,7 @@ void check_jobs_bg_status() {
   int completed_processes, result;
 
 
-  if (len >= 0){
+  if (len == 0){
     len = 1;
   }
   JobQueue new_job_queue = new_JobQueue(len);
@@ -162,25 +162,17 @@ void check_jobs_bg_status() {
       }else{
         break; //
       }
-
-      if (completed_processes != job->total_processes){  // all processes not finished
-        push_back_JobQueue(&new_job_queue, job);
-        // add it to the new job queue
-      }else{
-        // ALL PROCESSES FINISHED!
-        print_job_bg_complete(job->job_id, job->pid, job->cmd_str);
-        free_job(job);
-      }
     }
 
-    
+    if (completed_processes != job->total_processes){  // all processes not finished
+      push_back_JobQueue(&new_job_queue, job);
+      // add it to the new job queue
+    }else{
+      // ALL PROCESSES FINISHED!
+      print_job_bg_complete(job->job_id, job->pid, job->cmd_str);
+      free_job(job);
+    }
   }
-  
-
-  
-  
-
- 
 }
 
 // Prints the job id number, the process id of the first process belonging to
@@ -327,16 +319,31 @@ void run_cd(CDCommand cmd) {
 
   bool should_free = true;
   char* old_dir = get_current_directory(&should_free);
+
+  if (old_dir == NULL){
+    fprintf(stderr, "ERROR: unable to get old directory\n");
+    exit(EXIT_FAILURE);
+  }
   
   if (chdir(dir) == -1){
     perror("ERROR: Unable to change directory");
     free(old_dir);
+    exit(EXIT_FAILURE);
+  }
+
+  char* new_dir = get_current_directory(&should_free);
+
+  if (new_dir == NULL){
+    fprintf(stderr, "ERROR: unable to get old directory\n");
+    exit(EXIT_FAILURE);
   }
 
   write_env("OLD_PWD", old_dir);  
-  write_env("PWD", dir);
+  write_env("PWD", new_dir);
 
   free(old_dir);
+  free(new_dir);
+
 }
 
 // Sends a signal to all processes contained in a job
@@ -557,6 +564,7 @@ pid_t create_process(CommandHolder holder, int previous_read, int fds[2]) {
       int rout_fd = open(holder.redirect_out, flags);
       if (rout_fd == -1){
         perror("ERROR: unable to open redirect write/append file");
+        exit(EXIT_FAILURE);
       }
 
       if (dup2(rout_fd, STDOUT_FILENO) == -1){
@@ -591,7 +599,7 @@ pid_t create_process(CommandHolder holder, int previous_read, int fds[2]) {
     }
 
     if (fds[READ] != -1){
-      close(fds[WRITE]);
+      close(fds[READ]);
     }
 
     exit(EXIT_SUCCESS); // no more need for child process.
@@ -606,6 +614,13 @@ pid_t create_process(CommandHolder holder, int previous_read, int fds[2]) {
 
 // Run a list of commands
 void run_script(CommandHolder* holders) {
+
+  if (is_job_queue_initialized == false){
+    job_queue = new_JobQueue(1);
+    is_job_queue_initialized = true;
+  }
+
+
   if (holders == NULL)
     return;
 
@@ -674,9 +689,6 @@ void run_script(CommandHolder* holders) {
   job->cmd_str = get_command_string();
   job->total_processes = total_processes;
   
-  
-  
-  
   if (!(holders[0].flags & BACKGROUND)) {
     for (int i = 0; i < job->total_processes; i++){
       int wstatus;
@@ -690,12 +702,7 @@ void run_script(CommandHolder* holders) {
   else {
     // A background job.
     // TODO: Push the new job to the job queue
-    assign_background_job_id(job); // only need to assign if its a background job
-    if (is_job_queue_initialized == false){
-      job_queue = new_JobQueue(1);
-      is_job_queue_initialized = true;
-    }
-    
+    assign_background_job_id(job); // only need to assign if its a background job  
     push_back_JobQueue(&job_queue, job);
 
     
