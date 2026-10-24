@@ -12,7 +12,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <sys/wait.h>
+#include <sys/types.h>
+
 #include "quash.h"
+
+#include "deque.h"
 
 // Remove this and all expansion calls to it
 /**
@@ -20,6 +25,56 @@
  */
 #define IMPLEMENT_ME()                                                  \
   fprintf(stderr, "IMPLEMENT ME: %s(line %d): %s()\n", __FILE__, __LINE__, __FUNCTION__)
+
+
+
+#define READ 0
+#define WRITE 1
+
+
+
+/* Job Queue */
+
+#define MAX_NUMBER_OF_PIDS 10 
+// if there are more than 10, error out
+// this can be solved with dynamic array. 
+// don't feel like it tbh lol
+
+typedef struct Job{
+  int job_id;
+  pid_t pid;
+  char* cmd_str;
+  pid_t all_pids[MAX_NUMBER_OF_PIDS];
+  int total_processes;
+  
+} Job;
+
+
+
+
+
+IMPLEMENT_DEQUE_STRUCT(JobQueue, Job);
+IMPLEMENT_DEQUE(JobQueue, Job);
+PROTOTYPE_DEQUE(JobQueue, Job);
+
+bool is_job_queue_initialized = false;
+JobQueue job_queue;
+
+int max_job_id = 1;
+
+void assign_job_id(Job* job){
+  job->job_id = max_job_id;
+  max_job_id++;
+}
+
+/* Global Redirect Struct */
+typedef struct Redirect{
+  char* in;
+  char* out;
+  bool append;
+} Redirect;
+
+Redirect global_redirect;
 
 /***************************************************************************
  * Interface Functions
@@ -71,7 +126,7 @@ void check_jobs_bg_status() {
   // TODO: Check on the statuses of all processes belonging to all background
   // jobs. This function should remove jobs from the jobs queue once all
   // processes belonging to a job have completed.
-  IMPLEMENT_ME();
+  // IMPLEMENT_ME();
 
   // TODO: Once jobs are implemented, uncomment and fill the following line
   // print_job_bg_complete(job_id, pid, cmd);
@@ -107,22 +162,29 @@ void run_generic(GenericCommand cmd) {
   // in the array is the executable
   char* exec = cmd.args[0];
   char** args = cmd.args;
+/*   char* s;
 
-  pid_t pid;
-  pid = fork();
+  size_t count = 0;
+  fprintf(stdout, "exec = %s\n",exec);
 
-  if (pid == 0){
-    if (execvp(exec, args) == -1){
-      perror("ERROR: Failed to execute program");
-      exit(EXIT_FAILURE);
-    }
-  }else{
-    wait(NULL);
+  for (s = *args; s != NULL; s=*++args){
+    fprintf(stdout, "%s, ", s);
+    count += 1;
   }
+  fprintf(stdout, "\n");
 
-  // TODO: Implement run generic
-  // IMPLEMENT_ME();
 
+  for (; count != 0; count--){
+    args--;
+  }
+ */
+
+
+
+  if (execvp(exec, args) == -1){
+    perror("ERROR: Failed to execute program");
+    exit(EXIT_FAILURE);
+  }
   
 }
 
@@ -231,7 +293,7 @@ void run_kill(KillCommand cmd) {
   int signal = cmd.sig;
   int job_id = cmd.job;
 
-  printf("signal = %d, job_id = %d\n");
+  printf("signal = %d, job_id = %d\n", signal, job_id);
   // TODO: Remove warning silencers
   (void) signal; // Silence unused variable warning
   (void) job_id; // Silence unused variable warning
@@ -288,7 +350,6 @@ void child_run_command(Command cmd) {
   CommandType type = get_command_type(cmd);
 
   switch (type) {
-
   case GENERIC:
     run_generic(cmd.generic);
     break;
@@ -306,23 +367,15 @@ void child_run_command(Command cmd) {
     break;
 
   case EXPORT:
-    run_export(cmd.export);
-    break;
-
   case CD:
-    run_cd(cmd.cd);
-    break;
-
   case KILL:
-    run_kill(cmd.kill);
-    break;
-
   case EXIT:
   case EOC:
     break;
 
   default:
     fprintf(stderr, "Unknown command type: %d\n", type);
+    break;
   }
 }
 
@@ -354,20 +407,9 @@ void parent_run_command(Command cmd) {
     break;
 
   case GENERIC:
-    run_generic(cmd.generic);
-    break;
-
   case ECHO:
-    run_echo(cmd.echo);
-    break;
-
   case PWD:
-    run_pwd();
-    break;
-
   case JOBS:
-    run_jobs();
-
   case EXIT:
   case EOC:
     break;
@@ -393,7 +435,7 @@ void parent_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-void create_process(CommandHolder holder) {
+pid_t create_process(CommandHolder holder, int* given_pipe) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
@@ -402,39 +444,68 @@ void create_process(CommandHolder holder) {
   bool r_app = holder.flags & REDIRECT_APPEND; // This can only be true if r_out
                                                // is true
 
-  // TODO: Remove warning silencers
-  (void) p_in;  // Silence unused variable warning
-  (void) p_out; // Silence unused variable warning
-  (void) r_in;  // Silence unused variable warning
-  (void) r_out; // Silence unused variable warning
-  (void) r_app; // Silence unused variable warning
-
   // TODO: Setup pipes, redirects, and new process
 
   if (r_app == true && r_out == false){
     fprintf(stderr, "ERROR: redirect output is false while redirect append is true\n");
-    return; // returning because exit would kill quash
+    exit(EXIT_FAILURE);
   }
 
-  int fds[2];
-  pipe(fds);
+
+  if (p_in | p_out | r_in | r_out | r_app) // if we have a special thing we need to do
+  { // if we need to fork in the first place
+    fprintf(stdout, "p_in %d, p_out %d, r_in %d, r_out %d, r_app %d\n", p_in, p_out, r_in, r_out, r_app);
+
+    
 
 
+    if (r_in == true){
+      ;
+    }
 
-  pid_t pid = fork();
+    if (r_out == true){
+      if (r_app == true){ // need to check if append ONLY if r_out
+        ;
+      }
+    }
+  } 
+  // else no pipes necessary
+
+  // int fds[2];
+  // pipe(fds);
+
+  int wstatus;
+  pid_t pid;
+  pid = fork();
+
   if (pid == -1){
-    fprintf(stderr, "Error in creating process\n");
-  }
-  else if (pid == 0){
-    exit(0);
-    child_run_command(holder.cmd); 
+    perror("ERROR: Unable to process child process");
+    exit(EXIT_FAILURE);
+  } else if (pid == 0){
 
-  }
-  else{
-    wait(NULL);
+    if (p_in){
+      dup2(given_pipe[READ], STDIN_FILENO);
+
+    }else{
+      // close(fds[READ]);
+    }
+
+    if (p_out){
+      dup2(given_pipe[WRITE], STDOUT_FILENO);
+    }else{
+      // close(fds[WRITE]);
+    }
+
+    child_run_command(holder.cmd);
+
+  } else{
+    // close(fds[READ]);
+    // close(fds[WRITE]);
+    waitpid(pid, &wstatus, 0);
     parent_run_command(holder.cmd);
-  }                  
-  
+  }
+  return pid;
+
 }
 
 // Run a list of commands
@@ -449,29 +520,71 @@ void run_script(CommandHolder* holders) {
     end_main_loop();
     return;
   }
-  /*
-  else if (get_command_holder_type(holders[0]) == PWD &&
-          get_command_holder_type(holders[1]) == EOC)
-  {
-    run_pwd();
-  } 
-  */
+
 
   CommandType type;
+  // Job* job = malloc(sizeof(Job));
 
+
+
+  int previous_read = -1;
+
+  int fds[2] = 
+  {
+    -1,
+    -1,
+  };
+
+  int total_processes = 0;
   // Run all commands in the `holder` array
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i)
-    create_process(holders[i]);
+  {
+  
+    pid_t pid;
+
+
+    if (pipe(fds) == -1){
+      perror("ERROR: Unable to create pipe");
+      exit(EXIT_FAILURE);
+    }
+
+    pid = create_process(holders[i], fds);
+
+    if (total_processes <= 10)
+    ;
+      // job->all_pids[total_processes++] = pid;
+    else{
+      fprintf(stderr, "ERROR: Reached max amount of processes allowed: %d\n", MAX_NUMBER_OF_PIDS);
+      exit(EXIT_FAILURE);
+    }
+
+    dup2(fds[WRITE], fds[READ]);
+    
+
+  }
+
+  // free(job);  // REMOVE ONCE DONE DEBUGGING
+    
+  
 
   if (!(holders[0].flags & BACKGROUND)) {
     // Not a background Job
     // TODO: Wait for all processes under the job to complete
-    IMPLEMENT_ME();
+    // IMPLEMENT_ME();
   }
   else {
     // A background job.
     // TODO: Push the new job to the job queue
-    IMPLEMENT_ME();
+
+    if (is_job_queue_initialized == false){
+      job_queue = new_JobQueue(1);
+      is_job_queue_initialized = true;
+    }
+    
+    // push_back_JobQueue(&job_queue, )
+
+    
+    // IMPLEMENT_ME();
 
     // TODO: Once jobs are implemented, uncomment and fill the following line
     // print_job_bg_start(job_id, pid, cmd);
