@@ -169,6 +169,7 @@ void check_jobs_bg_status() {
       }else{
         // ALL PROCESSES FINISHED!
         print_job_bg_complete(job->job_id, job->pid, job->cmd_str);
+        free_job(job);
       }
     }
 
