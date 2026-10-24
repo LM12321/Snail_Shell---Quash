@@ -19,6 +19,9 @@
 
 #include "deque.h"
 
+#include <unistd.h>
+#include <fcntl.h>
+
 // Remove this and all expansion calls to it
 /**
  * @brief Note calls to any function that requires implementation
@@ -53,6 +56,7 @@ typedef struct Job{
 
 
 
+
 IMPLEMENT_DEQUE_STRUCT(JobQueue, Job);
 IMPLEMENT_DEQUE(JobQueue, Job);
 PROTOTYPE_DEQUE(JobQueue, Job);
@@ -65,6 +69,11 @@ int max_job_id = 1;
 void assign_job_id(Job* job){
   job->job_id = max_job_id;
   max_job_id++;
+}
+
+void free_job(Job* job){
+  free(job->cmd_str);
+  free(job);
 }
 
 /* Global Redirect Struct */
@@ -435,7 +444,7 @@ void parent_run_command(Command cmd) {
  *
  * @sa Command CommandHolder
  */
-pid_t create_process(CommandHolder holder, int* given_pipe) {
+pid_t create_process(CommandHolder holder, int previous_read, int fds[2]) {
   // Read the flags field from the parser
   bool p_in  = holder.flags & PIPE_IN;
   bool p_out = holder.flags & PIPE_OUT;
@@ -453,58 +462,95 @@ pid_t create_process(CommandHolder holder, int* given_pipe) {
 
 
   if (p_in | p_out | r_in | r_out | r_app) // if we have a special thing we need to do
-  { // if we need to fork in the first place
-    fprintf(stdout, "p_in %d, p_out %d, r_in %d, r_out %d, r_app %d\n", p_in, p_out, r_in, r_out, r_app);
+  { 
+     // fprintf(stdout, "p_in %d, p_out %d, r_in %d, r_out %d, r_app %d\n", p_in, p_out, r_in, r_out, r_app);
+  }
 
-    
 
 
-    if (r_in == true){
-      ;
-    }
-
-    if (r_out == true){
-      if (r_app == true){ // need to check if append ONLY if r_out
-        ;
-      }
-    }
-  } 
-  // else no pipes necessary
-
-  // int fds[2];
-  // pipe(fds);
-
-  int wstatus;
   pid_t pid;
   pid = fork();
 
   if (pid == -1){
     perror("ERROR: Unable to process child process");
     exit(EXIT_FAILURE);
-  } else if (pid == 0){
+  } 
+  else if (pid == 0) // child process
+  {
 
-    if (p_in){
-      dup2(given_pipe[READ], STDIN_FILENO);
+    //  ---- REDIRECT IN ----- 
+    if (r_in == true){  
+      int rin_fd = open(holder.redirect_in, O_RDONLY);
 
-    }else{
-      // close(fds[READ]);
+      if (rin_fd == -1){
+        perror("ERROR: unable to open redirect file");
+      }
+
+      if (dup2(rin_fd, STDIN_FILENO) == -1){
+        perror("ERROR: dup2 redirect stdin");
+        close(rin_fd);
+        exit(EXIT_FAILURE);
+      }
     }
 
+    // ---- REDIRECT OUT ----
+    if (r_out == true){
+      int flags = O_WRONLY | O_CREAT;
+      
+      if (r_app == true){ 
+        flags |= O_APPEND;  // REDIR APPEND
+      }else{
+        flags |= O_TRUNC; // truncate erases file when writing
+        // need to use these flags because need to create file if it doesn't exist
+      }
+
+      int rout_fd = open(holder.redirect_out, flags);
+      if (rout_fd == -1){
+        perror("ERROR: unable to open redirect write/append file");
+      }
+
+      if (dup2(rout_fd, STDOUT_FILENO) == -1){
+        perror("ERROR: dub2 redirect stdout");
+        exit(EXIT_FAILURE);
+      }
+    }
+    
+    // ---- PIPE IN ----
+    if (p_in && previous_read != -1){ // check if there's a previous in file to map
+      if (dup2(previous_read, STDIN_FILENO) == -1){
+        perror("ERROR: dub2 fail with STDIN");
+        exit(EXIT_FAILURE);
+      }
+
+    }
+    // ---- PIPE OUT ----
     if (p_out){
-      dup2(given_pipe[WRITE], STDOUT_FILENO);
-    }else{
-      // close(fds[WRITE]);
+      if (dup2(fds[WRITE], STDOUT_FILENO) == -1){
+        perror("ERROR: dub2 fail with STDOUT");
+        exit(EXIT_FAILURE);
+      }
+    }
+    child_run_command(holder.cmd); // run child command
+
+    // close pipes for child process
+    if (previous_read != -1){
+      close(previous_read);
+    }
+    if (fds[WRITE] != -1){
+      close(fds[WRITE]);
     }
 
-    child_run_command(holder.cmd);
+    if (fds[READ] != -1){
+      close(fds[WRITE]);
+    }
+
+    exit(EXIT_SUCCESS); // no more need for child process.
 
   } else{
-    // close(fds[READ]);
-    // close(fds[WRITE]);
-    waitpid(pid, &wstatus, 0);
-    parent_run_command(holder.cmd);
+    parent_run_command(holder.cmd);    
+    return pid; 
   }
-  return pid;
+  
 
 }
 
@@ -521,56 +567,75 @@ void run_script(CommandHolder* holders) {
     return;
   }
 
-
   CommandType type;
-  // Job* job = malloc(sizeof(Job));
-
-
+  Job* job = malloc(sizeof(Job));
 
   int previous_read = -1;
-
-  int fds[2] = 
-  {
-    -1,
-    -1,
-  };
-
   int total_processes = 0;
+  pid_t pid;
+
   // Run all commands in the `holder` array
   for (int i = 0; (type = get_command_holder_type(holders[i])) != EOC; ++i)
   {
+    
+    int fds[2] = {-1, -1};
   
-    pid_t pid;
-
-
-    if (pipe(fds) == -1){
-      perror("ERROR: Unable to create pipe");
-      exit(EXIT_FAILURE);
+    if (holders[i].flags & PIPE_OUT){
+      if (pipe(fds) == -1){
+        perror("ERROR: Unable to create pipe");
+        exit(EXIT_FAILURE);
+      }
+    }else{
+      fds[READ] = -1;
+      fds[WRITE] = -1;
     }
 
-    pid = create_process(holders[i], fds);
+    pid = create_process(holders[i], previous_read, fds);
 
-    if (total_processes <= 10)
-    ;
-      // job->all_pids[total_processes++] = pid;
+    if (total_processes < MAX_NUMBER_OF_PIDS){
+      if (total_processes == 0){  // initalized job pid
+        job->pid = pid;
+      }
+      job->all_pids[total_processes++] = pid;
+
+    }
     else{
       fprintf(stderr, "ERROR: Reached max amount of processes allowed: %d\n", MAX_NUMBER_OF_PIDS);
       exit(EXIT_FAILURE);
     }
 
-    dup2(fds[WRITE], fds[READ]);
-    
-
+    // close pipes
+    if (previous_read != -1){
+      close(previous_read);
+    }
+    if (fds[WRITE] != -1){
+      close(fds[WRITE]);
+    }
+    previous_read = fds[READ];  // assign previous read file descriptor to the previous_read
   }
 
-  // free(job);  // REMOVE ONCE DONE DEBUGGING
-    
   
 
+  // works because fds[READ] would be only thing left open
+  if (previous_read != -1){
+    close(previous_read);
+  }
+  
+  job->cmd_str = get_command_string();
+  job->total_processes = total_processes;
+  
+  assign_job_id(job);
+  
+  
   if (!(holders[0].flags & BACKGROUND)) {
-    // Not a background Job
-    // TODO: Wait for all processes under the job to complete
-    // IMPLEMENT_ME();
+    for (int i = 0; i < job->total_processes; i++){
+      int wstatus;
+
+      if (waitpid(job->all_pids[i], &wstatus, 0) == -1){
+        perror("ERROR: unable to wait for pid");
+      }
+    }
+    free_job(job);
   }
   else {
     // A background job.
